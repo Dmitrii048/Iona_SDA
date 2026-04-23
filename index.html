@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Нейросети в образовании | Протокол для Сретенской Академии</title>
+    <title>Внедрение ИИ в образовательный процесс | Сретенская Духовная Академия</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -13,12 +13,17 @@
             theme: {
                 extend: {
                     colors: {
-                        brand: { dark: '#1a202c', gold: '#c5a059', light: '#f7fafc', card: '#ffffff' },
-                        course: { bg: '#121212', panel: '#1e1e1e', text: '#e0e0e0', accent: '#d4af37' }
+                        brand: { 
+                            maroon: '#6b131e', /* Фирменный бордовый цвет */
+                            gold: '#c5a059',   /* Золотой */
+                            dark: '#1a1a1a', 
+                            light: '#fdfbf7',  /* Теплый белый, книжный */
+                            gray: '#f4f4f4'
+                        }
                     },
                     fontFamily: {
-                        sans:['Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
-                        serif:['Georgia', 'Cambria', 'Times New Roman', 'serif'],
+                        sans: ['Segoe UI', 'Roboto', 'Arial', 'sans-serif'],
+                        serif:['Georgia', 'Times New Roman', 'serif'],
                     }
                 }
             }
@@ -27,164 +32,380 @@
     <style>
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #f1f1f1; }
-        ::-webkit-scrollbar-thumb { background: #c5a059; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb { background: #6b131e; border-radius: 4px; }
         
-        .glass-panel { background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); }
-        .prompt-code { position: relative; border-left: 4px solid #c5a059; }
+        body { background-color: #fdfbf7; color: #333; }
         
-        .course-mode { background-color: #121212; color: #e0e0e0; font-family: 'Georgia', serif; }
-        .course-mode ::-webkit-scrollbar-track { background: #1e1e1e; }
-        .course-mode ::-webkit-scrollbar-thumb { background: #d4af37; }
-        
-        .timeline-step {
-            width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            border: 2px solid #555; background: #1e1e1e; cursor: pointer; transition: all 0.3s; font-weight: bold;
+        .sretensky-header {
+            background: url('https://placehold.co/1920x200/6b131e/6b131e') center/cover; /* Заглушка фона, можно заменить на текстуру */
+            background-color: #6b131e;
+            border-bottom: 4px solid #c5a059;
         }
-        .timeline-step.active { border-color: #d4af37; background: #d4af37; color: #000; }
-        .timeline-connector { height: 2px; flex-grow: 1; background: #555; }
+
+        .prompt-code { border-left: 4px solid #c5a059; background-color: #1a1a1a; color: #e5e5e5; }
         
         .article-number {
-            background-color: #1a202c; color: #c5a059; width: 40px; height: 40px; border-radius: 50%;
+            background-color: #6b131e; color: #c5a059; width: 45px; height: 45px; border-radius: 50%;
             display: flex; align-items: center; justify-content: center; font-size: 1.25rem; font-weight: bold; flex-shrink: 0;
+            border: 2px solid #c5a059;
         }
+
+        /* Стили для интерактивного демо внизу */
+        .demo-box { background-color: #1a1a1a; color: #eee; font-family: 'Georgia', serif; }
+        .demo-btn { background-color: #c5a059; color: #1a1a1a; font-family: sans-serif; font-weight: bold; }
     </style>
 </head>
-<body class="bg-brand-light text-gray-800 antialiased overflow-x-hidden">
+<body class="antialiased overflow-x-hidden">
 
-    <!-- Навигация -->
-    <nav class="bg-brand-dark text-white shadow-lg sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between h-20">
-                <div class="flex items-center">
-                    <i class="fa-solid fa-church text-brand-gold text-3xl mr-4"></i>
-                    <div>
-                        <h1 class="text-xl font-bold tracking-wider uppercase">Сретенская Духовная Академия</h1>
-                        <span class="text-sm text-brand-gold">Протокол внедрения ИИ в образование</span>
+    <!-- ФИРМЕННАЯ ШАПКА -->
+    <header class="sretensky-header text-white shadow-lg relative z-50 py-6">
+        <div class="max-w-5xl mx-auto px-4 flex flex-col items-center text-center">
+            <i class="fa-solid fa-church text-brand-gold text-5xl mb-4"></i>
+            <h1 class="text-3xl md:text-4xl font-serif font-bold tracking-wider uppercase mb-2">Московская Сретенская Духовная Академия</h1>
+            <p class="text-brand-gold text-lg font-sans">Методическое руководство: Искусственный интеллект в помощь преподавателю</p>
+        </div>
+    </header>
+
+    <!-- ОСНОВНОЙ КОНТЕНТ (ЛОНГРИД) -->
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+        <!-- Вступление и статья -->
+        <section class="bg-white rounded-xl shadow-md p-8 md:p-12 mb-12 gs-reveal border-t-4 border-brand-maroon">
+            <h2 class="text-3xl font-serif font-bold text-brand-maroon mb-6">Ваше Преподобие, дорогой отец Иона!</h2>
+            
+            <div class="prose max-w-none text-gray-800 text-lg leading-relaxed space-y-5 font-serif">
+                <p>Данный информационный портал создан как подробный протокол и методическое руководство по итогам нашей с Вами продолжительной и крайне продуктивной беседы. Мы детально обсуждали, как современные нейросети могут стать не просто «игрушкой», а настоящим виртуальным ассистентом профессора: создавать обучающие сервисы, анализировать исторические тексты, генерировать тесты и выступать в роли строгого экзаменатора для студентов.</p>
+                
+                <p>Вспомните наш первый эксперимент: мы пробовали на ходу создать сайт-ассистент в сервисе <strong>Z.ai</strong>. Я тогда написал запрос (промпт) на скорую руку. В результате ИИ выдал нам сервис, но опирался лишь на 1 страницу текста из 10. Тот мой промпт был откровенно посредственным, но главная суть была доказана — технология работает, и работает бесплатно! Вы можете освежить в памяти наш диалог по ссылке: <a href="https://chat.z.ai/s/90c9b7c3-4ab0-4547-8c34-92d7696059e8" target="_blank" class="text-blue-700 font-bold hover:underline"><i class="fa-solid fa-arrow-up-right-from-square mr-1 text-sm"></i>Открыть сессию в Z.ai</a>.</p>
+
+                <p>Мировая практика ведущих университетов (согласно гайдам исследователей из OpenAI и Стэнфорда) доказывает: ИИ не может заменить преподавателя-богослова или историка. Но он может взять на себя рутину. Главная проблема нейросетей — они склонны «галлюцинировать» (придумывать исторические факты). Чтобы этого избежать, <strong>критически важно давать им контекст</strong>.</p>
+                
+                <div class="bg-brand-gray border-l-4 border-brand-maroon p-6 my-8 rounded">
+                    <h4 class="font-sans font-bold text-brand-maroon mb-3 text-xl"><i class="fa-solid fa-download text-brand-gold mr-2"></i>Материалы для загрузки (То, что мы обсуждали)</h4>
+                    <p class="text-base font-sans text-gray-600 mb-4">Для правильной работы с ИИ я подготовил два отдельных текстовых файла (в формате .txt, который понимают все нейросети). Скачайте их перед началом работы.</p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <button onclick="downloadText()" class="flex-1 bg-brand-maroon text-white font-sans py-3 px-4 rounded hover:bg-red-900 transition shadow text-sm font-bold flex justify-center items-center">
+                            <i class="fa-solid fa-file-lines mr-2"></i>Скачать Текст Лекции (.txt)
+                        </button>
+                        <button onclick="downloadPrompt()" class="flex-1 bg-brand-gold text-brand-dark font-sans py-3 px-4 rounded hover:bg-yellow-600 transition shadow text-sm font-bold flex justify-center items-center">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-2"></i>Скачать Идеальный Промпт (.txt)
+                        </button>
                     </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <button id="tab-guide" onclick="switchTab('guide')" class="px-4 py-2 rounded-md font-medium text-brand-dark bg-brand-gold shadow-md transition-all duration-300">
-                        <i class="fa-solid fa-book-open mr-2"></i>Статья-инструкция
-                    </button>
-                    <button id="tab-course" onclick="switchTab('course')" class="px-4 py-2 rounded-md font-medium text-white border border-brand-gold hover:bg-brand-gold hover:text-brand-dark transition-all duration-300">
-                        <i class="fa-solid fa-laptop-code mr-2"></i>Пример: ИИ-Курс
-                    </button>
-                </div>
             </div>
-        </div>
-    </nav>
+        </section>
 
-    <!-- СЕКЦИЯ 1: СТАТЬЯ-ПРОТОКОЛ -->
-    <main id="section-guide" class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 origin-top">
+        <!-- ПОШАГОВАЯ ИНСТРУКЦИЯ (По стандартам Prompt Engineering) -->
+        <h2 class="text-3xl font-serif font-bold text-brand-maroon mb-8 text-center uppercase tracking-wide gs-reveal">Как правильно пользоваться ИИ: Пошаговая инструкция</h2>
         
-        <!-- Вступление: История беседы -->
-        <div class="bg-white rounded-2xl shadow-xl p-8 mb-10 gs-reveal border-t-8 border-brand-gold">
-            <h2 class="text-3xl font-bold text-brand-dark mb-6">Протокол нашей беседы: Как ИИ становится ассистентом преподавателя</h2>
+        <section class="bg-white rounded-xl shadow-md p-8 md:p-12 mb-16 gs-reveal">
+            <p class="text-lg font-serif mb-8">Отец Иона, чтобы нейросеть выдавала идеальный академический результат, пожалуйста, следуйте этому алгоритму каждый раз при начале работы. Базовые промпты, которые я дал, рабочие, но их всегда нужно дорабатывать под конкретную задачу.</p>
             
-            <div class="prose max-w-none text-gray-700 text-lg leading-relaxed space-y-4">
-                <p><strong>Ваше Преподобие, дорогой отец Иона!</strong> Этот портал создан как итог нашей с вами долгой и продуктивной беседы. Мы обсуждали, что современные нейросети вполне способны создавать обучающие сервисы, анализировать тексты и выступать в роли виртуальных экзаменаторов.</p>
+            <div class="space-y-8 font-sans">
+                <!-- Шаг 1 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-brand-maroon text-white rounded-full flex items-center justify-center font-bold text-xl">1</div>
+                    <div>
+                        <h4 class="font-bold text-xl text-brand-dark mb-2">Откройте сервис и найдите «Скрепку»</h4>
+                        <p class="text-gray-700">Зайдите на сайт выбранной нейросети (ссылки ниже). Первым делом обратите внимание на строку, куда вводится текст. Рядом с ней (обычно слева внизу) находится значок <strong><i class="fa-solid fa-paperclip text-brand-maroon mx-1"></i> (Скрепка)</strong> или <strong><i class="fa-solid fa-circle-plus text-brand-maroon mx-1"></i> (Плюс)</strong>. Нажмите на него.</p>
+                    </div>
+                </div>
+                <!-- Шаг 2 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-brand-maroon text-white rounded-full flex items-center justify-center font-bold text-xl">2</div>
+                    <div>
+                        <h4 class="font-bold text-xl text-brand-dark mb-2">Прикрепите материал (Контекст)</h4>
+                        <p class="text-gray-700">Загрузите ваш файл <code>.txt</code> с текстом лекции, главой из книги или статьей. Это критически важный шаг! Загруженный файл становится «клеткой» для ИИ — он больше не будет искать ответы в интернете, а будет опираться <strong>только на ваши труды</strong>.</p>
+                    </div>
+                </div>
+                <!-- Шаг 3 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-brand-maroon text-white rounded-full flex items-center justify-center font-bold text-xl">3</div>
+                    <div>
+                        <h4 class="font-bold text-xl text-brand-dark mb-2">Напишите запрос (Промпт)</h4>
+                        <p class="text-gray-700">После прикрепления файла введите текстовое задание. Правильный промпт должен состоять из трех частей:<br>
+                        • <strong>Роль:</strong> "Действуй как строгий профессор Сретенской академии..."<br>
+                        • <strong>Задача:</strong> "На основе прикрепленного файла составь тест..."<br>
+                        • <strong>Ограничения:</strong> "Не используй знания вне текста, отвечай подробно..."</p>
+                    </div>
+                </div>
+                <!-- Шаг 4 -->
+                <div class="flex gap-4">
+                    <div class="flex-shrink-0 w-12 h-12 bg-brand-gold text-brand-dark rounded-full flex items-center justify-center font-bold text-xl"><i class="fa-solid fa-rotate"></i></div>
+                    <div>
+                        <h4 class="font-bold text-xl text-brand-dark mb-2">Доработка и итерация</h4>
+                        <p class="text-gray-700">Первый ответ ИИ редко бывает идеальным. Мои базовые промпты нужно дорабатывать. Общайтесь с ним как с помощником: <em>"Ты сделал тест слишком простым. Сделай вопросы более сложными, с подвохом, добавь варианты ответов А, Б, В, Г"</em>.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- КАТАЛОГ ИНСТРУМЕНТОВ -->
+        <h2 class="text-3xl font-serif font-bold text-brand-maroon mb-8 text-center uppercase tracking-wide gs-reveal">Каталог рекомендованных нейросетей</h2>
+
+        <div class="space-y-8 gs-reveal">
+            
+            <!-- 1. Z.ai -->
+            <div class="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row gap-6 border border-gray-200">
+                <div class="md:w-1/3">
+                    <img src="images/zai.png" alt="Z.ai" onerror="this.src='https://placehold.co/400x250/1a1a1a/c5a059?text=Z.ai+(Скрепка)'" class="w-full rounded border shadow-sm">
+                    <div class="mt-2 text-center text-xs font-bold bg-green-100 text-green-800 py-1 rounded">🟢 Без VPN</div>
+                </div>
+                <div class="md:w-2/3">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="article-number">1</div>
+                        <h3 class="text-2xl font-bold font-sans"><a href="https://chat.z.ai" target="_blank" class="text-brand-maroon hover:underline">Z.ai (Агенты и сайты)</a></h3>
+                    </div>
+                    <p class="text-gray-700 font-sans mb-3">Сервис, с которого мы начали. Главный плюс: возможность бесплатно создать одноразовую веб-страницу или ИИ-агента под конкретную лекцию и раздать ссылку студентам.</p>
+                </div>
+            </div>
+
+            <!-- 2. Qwen -->
+            <div class="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row gap-6 border border-gray-200">
+                <div class="md:w-1/3">
+                    <img src="images/qwen.png" alt="Qwen" onerror="this.src='https://placehold.co/400x250/1a1a1a/c5a059?text=Qwen+(Web+Search)'" class="w-full rounded border shadow-sm">
+                    <div class="mt-2 text-center text-xs font-bold bg-green-100 text-green-800 py-1 rounded">🟢 Без VPN</div>
+                </div>
+                <div class="md:w-2/3">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="article-number">2</div>
+                        <h3 class="text-2xl font-bold font-sans"><a href="https://chat.qwen.ai" target="_blank" class="text-brand-maroon hover:underline">Qwen (Отключение поиска)</a></h3>
+                    </div>
+                    <p class="text-gray-700 font-sans mb-3">Отличная логика. <strong>Важнейшая функция:</strong> возможность вручную отключить кнопку «Web Search» (Поиск в сети). Загрузив файл и отключив эту кнопку, вы полностью блокируете галлюцинации нейросети — она будет отвечать строго по вашему документу.</p>
+                </div>
+            </div>
+
+            <!-- 3. DeepSeek -->
+            <div class="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row gap-6 border border-gray-200">
+                <div class="md:w-1/3">
+                    <img src="images/deepseek.png" alt="DeepSeek" onerror="this.src='https://placehold.co/400x250/1a1a1a/c5a059?text=DeepSeek'" class="w-full rounded border shadow-sm">
+                    <div class="mt-2 text-center text-xs font-bold bg-green-100 text-green-800 py-1 rounded">🟢 Без VPN</div>
+                </div>
+                <div class="md:w-2/3">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="article-number">3</div>
+                        <h3 class="text-2xl font-bold font-sans"><a href="https://chat.deepseek.com" target="_blank" class="text-brand-maroon hover:underline">DeepSeek (Глубокий анализ)</a></h3>
+                    </div>
+                    <p class="text-gray-700 font-sans mb-3">Не умеет создавать фото или видео, но является абсолютным лидером в анализе сложных текстов. Превосходно подходит для проверки студенческих эссе на логические и исторические ошибки.</p>
+                </div>
+            </div>
+
+            <!-- 4. GigaChat -->
+            <div class="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row gap-6 border border-gray-200">
+                <div class="md:w-1/3">
+                    <img src="images/gigachat.png" alt="GigaChat" onerror="this.src='https://placehold.co/400x250/1a1a1a/c5a059?text=GigaChat'" class="w-full rounded border shadow-sm">
+                    <div class="mt-2 text-center text-xs font-bold bg-green-100 text-green-800 py-1 rounded">🟢 Без VPN</div>
+                </div>
+                <div class="md:w-2/3">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="article-number">4</div>
+                        <h3 class="text-2xl font-bold font-sans"><a href="https://giga.chat" target="_blank" class="text-brand-maroon hover:underline">GigaChat (Генерация фото)</a></h3>
+                    </div>
+                    <p class="text-gray-700 font-sans mb-3">Отечественная нейросеть от Сбера. Она отлично работает с текстом на русском языке, <strong>но я особо рекомендую использовать её для создания фотографий и визуализаций</strong>. Отлично рисует исторические сцены, портреты для презентаций.</p>
+                </div>
+            </div>
+
+            <!-- 5. NotebookLM -->
+            <div class="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row gap-6 border border-gray-200">
+                <div class="md:w-1/3">
+                    <img src="images/notebooklm.png" alt="NotebookLM" onerror="this.src='https://placehold.co/400x250/1a1a1a/c5a059?text=NotebookLM'" class="w-full rounded border shadow-sm">
+                    <div class="mt-2 text-center text-xs font-bold bg-red-100 text-red-800 py-1 rounded border border-red-300">🔴 Нужен VPN</div>
+                </div>
+                <div class="md:w-2/3">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="article-number">5</div>
+                        <h3 class="text-2xl font-bold font-sans"><a href="https://notebooklm.google.com" target="_blank" class="text-brand-maroon hover:underline">NotebookLM (База знаний)</a></h3>
+                    </div>
+                    <p class="text-gray-700 font-sans mb-3">Специализированный инструмент от Google для ученых. Позволяет загрузить до 50 книг или статей. ИИ изучает только их и становится приватным экспертом. Можно дать ссылку студентам, и они будут получать ответы строго по загруженной вами литературе.</p>
+                </div>
+            </div>
+
+            <!-- 6. AI Studio -->
+            <div class="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row gap-6 border border-gray-200">
+                <div class="md:w-1/3">
+                    <img src="images/aistudio.png" alt="AI Studio" onerror="this.src='https://placehold.co/400x250/1a1a1a/c5a059?text=AI+Studio+(Микрофон)'" class="w-full rounded border shadow-sm">
+                    <div class="mt-2 text-center text-xs font-bold bg-red-100 text-red-800 py-1 rounded border border-red-300">🔴 Нужен VPN</div>
+                </div>
+                <div class="md:w-2/3">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="article-number">6</div>
+                        <h3 class="text-2xl font-bold font-sans"><a href="https://aistudio.google.com" target="_blank" class="text-brand-maroon hover:underline">Google AI Studio (Голосовой ввод)</a></h3>
+                    </div>
+                    <p class="text-gray-700 font-sans mb-3">Профессиональная среда. Идеально генерирует код сайтов. <strong>Главная и уникальная функция:</strong> поддержка микрофона. Вы можете надиктовать голосом сложнейший промпт на несколько минут, и система поймет вас безупречно.</p>
+                </div>
+            </div>
+
+            <!-- 7. Gemini -->
+            <div class="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row gap-6 border border-gray-200">
+                <div class="md:w-1/3 flex items-center justify-center bg-gray-100 rounded">
+                    <i class="fa-solid fa-sparkles text-5xl text-blue-500 py-10"></i>
+                </div>
+                <div class="md:w-2/3">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="article-number">7</div>
+                        <h3 class="text-2xl font-bold font-sans">Gemini</h3>
+                        <span class="text-xs font-bold bg-red-100 text-red-800 px-2 py-1 rounded">🔴 VPN</span>
+                    </div>
+                    <p class="text-gray-700 font-sans mb-3">Официальный чат-бот от Google. Неплох для написания структурированных учебных программ и креативных задач. Требует зарубежного аккаунта.</p>
+                </div>
+            </div>
+
+            <!-- 8. Grok -->
+            <div class="bg-white rounded-xl shadow p-6 flex flex-col md:flex-row gap-6 border border-gray-200">
+                <div class="md:w-1/3 flex items-center justify-center bg-gray-100 rounded">
+                    <i class="fa-brands fa-x-twitter text-5xl text-black py-10"></i>
+                </div>
+                <div class="md:w-2/3">
+                    <div class="flex items-center gap-3 mb-2">
+                        <div class="article-number">8</div>
+                        <h3 class="text-2xl font-bold font-sans">Grok</h3>
+                        <span class="text-xs font-bold bg-red-100 text-red-800 px-2 py-1 rounded">🔴 VPN</span>
+                    </div>
+                    <p class="text-gray-700 font-sans mb-3">Нейросеть от Илона Маска (встроена в платформу X). Она также весьма неплоха в анализе данных и генерации изображений без цензуры, но доступна в основном по платной подписке (Premium) и требует VPN.</p>
+                </div>
+            </div>
+
+        </div>
+
+        <hr class="my-16 border-t-2 border-brand-gold">
+
+        <!-- ВСТРОЕННЫЙ ИНТЕРАКТИВНЫЙ ПРИМЕР -->
+        <h2 class="text-3xl font-serif font-bold text-brand-maroon mb-6 text-center gs-reveal">Пример: Как выглядит сгенерированный ИИ-Курс</h2>
+        <p class="text-center font-sans text-gray-600 mb-10 gs-reveal">Ниже представлен интерактивный блок, который ИИ создал по тексту о Болгарской Церкви на основе моего промпта. Именно так студенты могут закреплять материал.</p>
+
+        <div class="demo-box rounded-xl shadow-2xl border-4 border-[#333] overflow-hidden gs-reveal flex flex-col lg:flex-row">
+            
+            <!-- Левая колонка (Текст) -->
+            <div class="lg:w-2/3 bg-[#1e1e1e] p-8 flex flex-col border-r border-[#333]">
+                <div class="flex justify-between items-center mb-6 border-b border-[#444] pb-2">
+                    <span class="text-brand-gold text-sm font-sans tracking-widest uppercase">Лекция 2 ИЗ 10</span>
+                </div>
                 
-                <p>Помните наш первый эксперимент? Мы пробовали создать сайт-ассистент в сервисе <strong>Z.ai</strong>. Я сделал запрос на скорую руку, и нейросеть тогда выдала лишь 1 страницу из 10. Мой промпт (запрос) был откровенно посредственным, но суть была ясна — это работает! Вы можете освежить в памяти ту нашу сессию по ссылке: <a href="https://chat.z.ai/s/90c9b7c3-4ab0-4547-8c34-92d7696059e8" target="_blank" class="text-blue-600 font-bold hover:underline"><i class="fa-solid fa-arrow-up-right-from-square mr-1 text-sm"></i>Открыть наш диалог в Z.ai</a>.</p>
+                <h1 class="text-3xl font-bold mb-4 text-white">Образование Болгарской Церкви</h1>
+                <div class="text-lg leading-relaxed text-gray-300 space-y-4 font-serif">
+                    <p>Образование Болгарской Церкви тесным образом было связано с формированием Болгарского государства. При болгарском князе Борисе (852 – 889) в 865 г. произошло массовое крещение болгар.</p>
+                    <p>4 марта 870 г. Константинопольский Патриарх Игнатий объявил Болгарскую Церковь автономной. Первым архиепископом стал Иосиф.</p>
+                </div>
                 
-                <div class="bg-gray-50 border-l-4 border-gray-400 p-5 my-6 rounded">
-                    <h4 class="font-bold text-brand-dark mb-2"><i class="fa-solid fa-triangle-exclamation text-brand-gold mr-2"></i>Главное правило (База):</h4>
-                    <p class="text-base">Если вы хотите, чтобы ИИ работал с текстом вашей лекции (например, из книги по истории поместных церквей), лучше всего создать на компьютере обычный документ в программе <strong>«Блокнот» (формат .txt)</strong>, скопировать текст туда, а затем прикрепить этот файл в чат с нейросетью через значок <strong>«Скрепки»</strong>.</p>
-                    <button onclick="downloadTxt()" class="mt-4 bg-brand-dark text-white text-sm py-2 px-4 rounded hover:bg-gray-800 transition shadow">
-                        <i class="fa-solid fa-download mr-2"></i>Скачать готовый .txt файл лекции для тестов
-                    </button>
+                <!-- Интерактив -->
+                <div class="mt-10 bg-[#2a2a2a] border border-[#444] rounded-xl p-6 shadow-inner font-sans">
+                    <h3 class="text-brand-gold text-xl mb-4 font-bold"><i class="fa-solid fa-map-location-dot mr-2"></i>Исторический анализ</h3>
+                    
+                    <div class="flex flex-col sm:flex-row gap-6 mb-6 justify-center items-center">
+                        <div class="text-center">
+                            <img src="images/map.jpg" onerror="this.src='https://placehold.co/300x200/222/c5a059?text=Карта+Первого+Царства+(IX+в)'" class="w-64 h-40 object-cover rounded border-2 border-[#555] shadow-lg mb-2">
+                            <span class="text-xs text-gray-400 mt-2 block">Карта Болгарии</span>
+                        </div>
+                        <div class="text-center">
+                            <img src="images/boris.jpg" onerror="this.src='https://placehold.co/200x200/222/c5a059?text=Князь+Борис+I'" class="w-40 h-40 object-cover rounded border-2 border-[#555] shadow-lg mb-2">
+                            <span class="text-xs text-gray-400 mt-2 block">Князь Борис I</span>
+                        </div>
+                    </div>
+                    
+                    <p class="mb-4">Имеет ли личность князя Бориса отношение к временному промежутку границ государства, изображенных на карте?</p>
+                    
+                    <div class="flex gap-4">
+                        <button onclick="alert('Абсолютно верно! Князь Борис I правил в 852–889 годах, что относится к IX веку.')" class="flex-1 bg-transparent border border-brand-gold text-brand-gold py-2 rounded hover:bg-brand-gold hover:text-black transition">Да, это IX век</button>
+                        <button onclick="alert('Ошибка. Обратите внимание на годы: 852–889 гг. Это IX век.')" class="flex-1 bg-transparent border border-gray-500 text-gray-400 py-2 rounded hover:bg-gray-700 transition">Нет, эпохи разные</button>
+                    </div>
                 </div>
-                <p>Ниже я подготовил подробный, пошаговый обзор инструментов, которые мы обсуждали, с улучшенными промптами для каждого из них.</p>
             </div>
+
+            <!-- Правая колонка (Чат) -->
+            <div class="lg:w-1/3 bg-[#121212] flex flex-col font-sans">
+                <div class="bg-[#1a1a1a] px-6 py-4 border-b border-[#333] flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-brand-maroon flex items-center justify-center text-white text-lg">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-white">ИИ-Экзаменатор</div>
+                        <div class="text-xs text-gray-400">Проверяет ваши вопросы</div>
+                    </div>
+                </div>
+
+                <div class="flex-grow p-6 overflow-y-auto space-y-4">
+                    <div class="bg-[#2a2a2a] p-4 rounded-lg rounded-tl-none border border-[#444] text-sm text-gray-200 shadow leading-relaxed">
+                        Изучите текст лекции слева. Затем задайте вопрос. Я оценю его релевантность и отвечу строго по тексту лекции.
+                    </div>
+                </div>
+
+                <div class="p-4 border-t border-[#333] bg-[#1a1a1a]">
+                    <div class="flex relative">
+                        <input type="text" class="w-full bg-[#2a2a2a] border border-[#444] rounded py-3 pl-4 pr-12 text-sm text-white focus:outline-none focus:border-brand-gold transition" placeholder="Пример: В каком году было крещение?">
+                        <button class="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-brand-gold rounded text-black flex items-center justify-center hover:bg-yellow-600 transition">
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
         </div>
 
-        <h2 class="text-3xl font-bold text-brand-dark mb-8 gs-reveal text-center border-b pb-4">Каталог ИИ-инструментов для Сретенской Академии</h2>
+    </main>
 
-        <!-- ПУНКТ 1: Z.ai -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-8 gs-reveal flex flex-col md:flex-row gap-6">
-            <div class="md:w-1/3 flex-shrink-0">
-                <img src="images/zai.png" alt="Z.ai" onerror="this.src='https://placehold.co/400x300/1a202c/c5a059?text=Скриншот+Z.ai+(Скрепка)'" class="w-full rounded-lg border shadow-sm">
-                <div class="mt-2 text-center text-xs text-gray-500 font-bold bg-green-100 text-green-800 py-1 rounded">🟢 Работает без VPN</div>
-            </div>
-            <div class="md:w-2/3">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="article-number">1</div>
-                    <h3 class="text-2xl font-bold text-brand-dark"><a href="https://chat.z.ai" target="_blank" class="hover:text-blue-600 transition">Z.ai — Быстрые сайты и агенты</a></h3>
-                </div>
-                <p class="text-gray-700 mb-4">Тот самый сервис, с которого мы начали. Его огромный плюс — он дает возможность бесплатно и без ограничений создать одноразовый сайт-ассистент под конкретную лекцию. Вы загружаете <code>.txt</code> файл через значок скрепки внизу экрана, и ИИ создает страницу со ссылкой, которую можно отправить студентам.</p>
-                <div class="bg-gray-800 text-gray-300 p-4 rounded-lg prompt-code text-sm font-mono">
-                    <span class="block text-brand-gold font-bold mb-2 font-sans text-xs uppercase tracking-widest">Улучшенный промпт для создания курса:</span>
-                    Я прикрепил текст лекции. Выступи в роли методиста Сретенской Духовной Академии. Создай интерактивный веб-сайт для студентов. Разбей текст ровно на 10 логических страниц. На каждой странице реализуй процесс проверки знаний: студент читает абзац и задает вопрос. Встроенный ИИ должен проверять, есть ли ответ на этот вопрос ИМЕННО в прочитанном фрагменте, отсекать глупые вопросы и не выдумывать факты.
-                </div>
-            </div>
+    <!-- ПОДВАЛ (Стиль Сретенки) -->
+    <footer class="bg-[#1a1a1a] text-gray-400 py-8 border-t-4 border-brand-maroon mt-12 font-sans text-sm">
+        <div class="max-w-5xl mx-auto px-4 text-center">
+            <p>&copy; Сретенская Духовная Академия. Методические материалы по работе с нейросетями.</p>
         </div>
+    </footer>
 
-        <!-- ПУНКТ 2: Qwen -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-8 gs-reveal flex flex-col md:flex-row gap-6">
-            <div class="md:w-1/3 flex-shrink-0">
-                <img src="images/qwen.png" alt="Qwen" onerror="this.src='https://placehold.co/400x300/1a202c/c5a059?text=Скриншот+Qwen+(Отключить+Web+Search)'" class="w-full rounded-lg border shadow-sm">
-                <div class="mt-2 text-center text-xs text-gray-500 font-bold bg-green-100 text-green-800 py-1 rounded">🟢 Работает без VPN</div>
-            </div>
-            <div class="md:w-2/3">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="article-number">2</div>
-                    <h3 class="text-2xl font-bold text-brand-dark"><a href="https://chat.qwen.ai" target="_blank" class="hover:text-blue-600 transition">Qwen — Поиск и борьба с галлюцинациями</a></h3>
-                </div>
-                <p class="text-gray-700 mb-4">Китайская нейросеть, которая отлично работает на русском. У нее есть потрясающая функция, идеальная для преподавателя — <strong>кнопка отключения веб-поиска (Web Search)</strong>. Если её выключить и прикрепить ваш файл, ИИ будет жестко находиться в контексте лекции и не станет «галлюцинировать» (придумывать исторические факты). Он также сам подбирает лучшую модель для ответа.</p>
-                <div class="bg-gray-800 text-gray-300 p-4 rounded-lg prompt-code text-sm font-mono">
-                    <span class="block text-brand-gold font-bold mb-2 font-sans text-xs uppercase tracking-widest">Строгий анти-галлюцинаторный промпт:</span>
-                    [Сначала прикрепите файл и отключите Web Search]. Твоя задача — отвечать на вопросы СТРОГО по прикрепленному документу. Если в тексте нет информации для ответа, ты ОБЯЗАН сказать: "В данной лекции этот вопрос не поднимался". Запрещено использовать любые сторонние знания. Жди моего первого вопроса.
-                </div>
-            </div>
-        </div>
+    <!-- СКРИПТЫ ДЛЯ СКАЧИВАНИЯ ФАЙЛОВ И АНИМАЦИИ -->
+    <script>
+        // Текст лекции для скачивания
+        const lectureText = `Глава 10. Болгарская Православная Церковь
+10.1. Христианство в Болгарии до завоевания ее Византией
+Коренным населением Балканского полуострова были фракийские племена. С 341 по 146 гг. до Р. Х. фракийские земли находились под властью Македонии. В середине II в. до Р. Х. Македония была подчинена Римской империи. Здесь появились новые города, которые в христианскую эпоху станут центрами новых епархий: Никополь, Маркианополь, Сердика (ныне София), Анхиал и др.
 
-        <!-- ПУНКТ 3: DeepSeek -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-8 gs-reveal flex flex-col md:flex-row gap-6">
-            <div class="md:w-1/3 flex-shrink-0">
-                <img src="images/deepseek.png" alt="DeepSeek" onerror="this.src='https://placehold.co/400x300/1a202c/c5a059?text=Скриншот+DeepSeek'" class="w-full rounded-lg border shadow-sm">
-                <div class="mt-2 text-center text-xs text-gray-500 font-bold bg-green-100 text-green-800 py-1 rounded">🟢 Работает без VPN</div>
-            </div>
-            <div class="md:w-2/3">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="article-number">3</div>
-                    <h3 class="text-2xl font-bold text-brand-dark"><a href="https://chat.deepseek.com" target="_blank" class="hover:text-blue-600 transition">DeepSeek — Глубокий анализ текста</a></h3>
-                </div>
-                <p class="text-gray-700 mb-4">Логика работы здесь такая же (ищите скрепку), но эта модель превосходит многих в аналитике. К сожалению, создавать фото или видео она не умеет, зато блестяще проверяет тексты на логику, пишет конспекты и анализирует студенческие эссе.</p>
-                <div class="bg-gray-800 text-gray-300 p-4 rounded-lg prompt-code text-sm font-mono">
-                    <span class="block text-brand-gold font-bold mb-2 font-sans text-xs uppercase tracking-widest">Промпт для проверки студенческих работ:</span>
-                    Выступи в роли строгого профессора истории. Проанализируй текст ответа студента[вставить текст] и сравни его с эталонной лекцией, которую я прикрепил. Найди исторические неточности, логические ошибки и поставь оценку, подробно аргументировав её.
-                </div>
-            </div>
-        </div>
+Христианство на территории Болгарии распространялось благодаря ученикам ап. Павла. Один из них, апостол Амплий, основал первую епископскую кафедру в г. Одесс (совр. Варна).
 
-        <!-- ПУНКТ 4: GigaChat -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-8 gs-reveal flex flex-col md:flex-row gap-6">
-            <div class="md:w-1/3 flex-shrink-0">
-                <img src="images/gigachat.png" alt="GigaChat" onerror="this.src='https://placehold.co/400x300/1a202c/c5a059?text=Скриншот+GigaChat'" class="w-full rounded-lg border shadow-sm">
-                <div class="mt-2 text-center text-xs text-gray-500 font-bold bg-green-100 text-green-800 py-1 rounded">🟢 Работает без VPN</div>
-            </div>
-            <div class="md:w-2/3">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="article-number">4</div>
-                    <h3 class="text-2xl font-bold text-brand-dark"><a href="https://giga.chat" target="_blank" class="hover:text-blue-600 transition">GigaChat — Создание и оживление фото</a></h3>
-                </div>
-                <p class="text-gray-700 mb-4">Отечественная разработка от Сбера. Для создания визуальных материалов бесплатно — я лично рекомендую именно его. Он отлично понимает русский язык, генерирует неплохие картинки, умеет оживлять старые фотографии и делать короткие видеовставки.</p>
-                <div class="bg-gray-800 text-gray-300 p-4 rounded-lg prompt-code text-sm font-mono">
-                    <span class="block text-brand-gold font-bold mb-2 font-sans text-xs uppercase tracking-widest">Промпт для генерации изображений:</span>
-                    Нарисуй исторически достоверную сцену: Князь Борис I принимает крещение в 865 году. Стиль: классическая академическая живопись, высокая детализация лиц, реалистичное освещение.
-                </div>
-            </div>
-        </div>
+Во II в. епископские кафедры возникли в городах Анхиал, Дебелт, Сердика, Фессалоника.
 
-        <!-- ПУНКТ 5: NotebookLM -->
-        <div class="bg-white rounded-xl shadow-md p-6 mb-8 gs-reveal flex flex-col md:flex-row gap-6">
-            <div class="md:w-1/3 flex-shrink-0">
-                <img src="images/notebooklm.png" alt="NotebookLM" onerror="this.src='https://placehold.co/400x300/1a202c/c5a059?text=Скриншот+NotebookLM'" class="w-full rounded-lg border border-red-200 shadow-sm">
-                <div class="mt-2 text-center text-xs text-white font-bold bg-red-600 py-1 rounded">🔴 Требуется VPN</div>
-            </div>
-            <div class="md:w-2/3">
-                <div class="flex items-center gap-3 mb-3">
-                    <div class="article-number">5</div>
-                    <h3 class="text-2xl font-bold text-brand-dark"><a href="https://notebooklm.google.com" target="_blank" class="hover:text-blue-600 transition">NotebookLM — Ваш ИИ-заместитель</a></h3>
-                </div>
-                <p class="text-gray-700 mb-4">Для профессиональной работы это шедевр. Вы загружаете сюда литературу в любом формате. Сервис создает "базу знаний". Вы можете поделиться ссылкой со студентами: они будут задавать "тупые вопросы", а ИИ будет отвечать им <strong>только</strong> на основании загруженных вами материалов, не позволяя студентам менять контекст. Практически ноль галлюцинаций! Также умеет делать учебные аудио-подкасты.</p>
-                <div class="bg-gray-800 text-gray-300 p-4 rounded-lg prompt-code text-sm font-mono">
+К концу IV в. Балканский полуостров был достаточно христианизирован. Города, в которых находились центры епархий, стали играть большую роль. В 343 г. в Сердике проходил Церковный Собор.
+
+В конце IV – V вв. христианство на Балканах проповедовал римский миссионер св. Никита Ремесьянский.
+
+Образование Болгарской Церкви тесным образом было связано с формированием Болгарского государства. При болгарском князе Борисе (852 – 889) в 865 г. произошло массовое крещение болгар. Сам князь Борис принял во св. крещении имя Михаил в честь византийского императора Михаила III.
+
+Сразу после принятия христианства князь Борис предпринял активные шаги к провозглашению автокефалии Церкви. Сначала с этой просьбой болгары обратились к Константинопольскому Патриарху Фотию, но получили отказ. Причина отказа заключалась в том, что, по мнению Патриарха, Болгарская Церковь еще достаточно молода и должна находиться в подчинении Константинополю. Борис, вынашивая вместе с мыслью об автокефалии идею независимого государства, обращается к Римскому папе Николаю I. Переговоры с Римом тянулись с 866 по 869 г. и закончились безрезультатно. Тогда Борис вторично обращается в Константинополь
+
+Итогом переговоров было то, что 4 марта 870 г. Константинопольский Патриарх Игнатий объявил Болгарскую Церковь автономной. Первым архиепископом автономной Болгарской Церкви стал Иосиф. Таким образом, было положено начало административному устройству Болгарской Православной Церкви.
+
+В 889 г. Борис отрекся от престола и удалился в монастырь. Престол унаследовал старший сын Бориса – Владимир (889 – 893), ярый антихристианин. Он хотел ликвидировать христианство в Болгарии, но по приказу отца Владимир был схвачен, ослеплен и посажен в тюрьму.`;
+
+        // Идеальный промпт для скачивания (Исправленный)
+        const promptText = `Выступи в роли методиста. Создай обучающий интерактивный сайт из 10 страниц, на которых будет реализован процесс обучения студентов Сретенской духовной академии строго по контексту прикрепленной статьи о Болгарской Церкви.
+
+Логика работы сервиса:
+1. На каждой странице (всего их 10, идут по возрастанию от начала к концу темы) студенту дается фрагмент текста.
+2. Реализуй окно чата со встроенным ИИ-ассистентом. Студент, прослушав/прочитав лекцию, должен задать релевантный вопрос ИИ.
+3. ИИ анализирует вопрос, сравнивает его с текстом и отвечает: релевантен ли вопрос. Если студент задает вопрос не по теме текущего абзаца — ИИ дает понять, что вопрос неподходящий или неграмотный. Если вопрос хороший — отвечает на него на основании текста и подводит к следующей странице курса.
+4. На одном из слайдов реализуй интерактивное задание: покажи карту Болгарии IX века и портрет князя Бориса I. Задай студентам вопрос: соответствует ли время правления князя Бориса границам государства на этой карте? (Ответ: да, соотносится, т.к. Борис правил в 852-889 гг, это IX век).
+
+Сервис должен научить студентов правильно задавать вопросы по изученному материалу и не галлюцинировать.`;
+
+        function downloadFile(content, filename) {
+            const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function downloadText() {
+            downloadFile(lectureText, "Tekst_Lekcii_Bolgarskaya_Tserkov.txt");
+        }
+
+        function downloadPrompt() {
+            downloadFile(promptText, "Idealniy_Prompt_Dlya_Zai.txt");
+        }
+
+        // Анимация GSAP
+        window.onload = () => {
+            gsap.from(".gs-reveal", { y: 40, opacity: 0, duration: 0.8, stagger: 0.15, ease: "power2.out" });
+        };
+    </script>
+</body>
+</html>
