@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нейросети в образовании | Сретенская Духовная Академия</title>
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Подключение GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <!-- Подключение иконок FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            dark: '#1a202c',
+                            gold: '#c5a059',
+                            light: '#f7fafc',
+                            card: '#ffffff'
+                        },
+                        course: {
+                            bg: '#121212',
+                            panel: '#1e1e1e',
+                            text: '#e0e0e0',
+                            accent: '#d4af37'
+                        }
+                    },
+                    fontFamily: {
+                        sans:['Segoe UI', 'Roboto', 'Helvetica', 'Arial', 'sans-serif'],
+                        serif:['Georgia', 'Cambria', 'Times New Roman', 'serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #c5a059; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #a38245; }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .prompt-code { position: relative; }
+        
+        /* Стили для темного интерактивного курса */
+        .course-mode { background-color: #121212; color: #e0e0e0; font-family: 'Georgia', serif; }
+        .course-mode ::-webkit-scrollbar-track { background: #1e1e1e; }
+        .course-mode ::-webkit-scrollbar-thumb { background: #d4af37; }
+        
+        .timeline-step {
+            width: 40px; height: 40px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            border: 2px solid #555; background: #1e1e1e; cursor: pointer;
+            transition: all 0.3s; font-family: sans-serif; font-weight: bold;
+        }
+        .timeline-step.active { border-color: #d4af37; background: #d4af37; color: #000; }
+        .timeline-step:hover:not(.active) { border-color: #d4af37; color: #d4af37; }
+        .timeline-connector { height: 2px; flex-grow: 1; background: #555; }
+        
+        /* Анимация ссылок */
+        .ai-link { position: relative; display: inline-block; }
+        .ai-link::after {
+            content: ''; position: absolute; width: 100%; transform: scaleX(0); height: 2px;
+            bottom: 0; left: 0; background-color: #c5a059; transform-origin: bottom right; transition: transform 0.25s ease-out;
+        }
+        .ai-link:hover::after { transform: scaleX(1); transform-origin: bottom left; }
+    </style>
+</head>
+<body class="bg-brand-light text-gray-800 antialiased overflow-x-hidden">
+
+    <!-- Навигация -->
+    <nav class="bg-brand-dark text-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-20">
+                <div class="flex items-center">
+                    <i class="fa-solid fa-church text-brand-gold text-3xl mr-4"></i>
+                    <div>
+                        <h1 class="text-xl font-bold tracking-wider uppercase">Сретенская Духовная Академия</h1>
+                        <span class="text-sm text-brand-gold">Методический ИИ-портал для преподавателей</span>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <button id="tab-guide" onclick="switchTab('guide')" class="px-4 py-2 rounded-md font-medium text-brand-dark bg-brand-gold shadow-md transition-all duration-300">
+                        <i class="fa-solid fa-book-open mr-2"></i>Методическое руководство
+                    </button>
+                    <button id="tab-course" onclick="switchTab('course')" class="px-4 py-2 rounded-md font-medium text-white border border-brand-gold hover:bg-brand-gold hover:text-brand-dark transition-all duration-300">
+                        <i class="fa-solid fa-graduation-cap mr-2"></i>Практикум: Интерактивный курс
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- СЕКЦИЯ 1: МЕТОДИЧКА -->
+    <main id="section-guide" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 origin-top">
+        
+        <!-- Вступление -->
+        <div class="glass-panel rounded-2xl shadow-xl p-8 mb-10 gs-reveal">
+            <h2 class="text-3xl font-bold text-brand-dark mb-4 border-b-2 border-brand-gold pb-2">Ваше Преподобие, дорогой отец Иона!</h2>
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="md:w-2/3 text-lg leading-relaxed text-gray-700">
+                    <p class="mb-4">Искусственный интеллект (ИИ) — это не замена таланту и опыту преподавателя, а ваш личный, сверхбыстрый ассистент. Он способен за секунды проанализировать исторический фолиант, составить план семинара, сгенерировать тест или ответить на типовые вопросы студентов.</p>
+                    <p class="mb-4"><strong>Главное правило работы:</strong> найдите в интерфейсе чата значок <strong>«Скрепки» <i class="fa-solid fa-paperclip text-brand-gold mx-1"></i> (или «Плюсика»)</strong>. Именно через него нужно загружать ваш текстовый файл с лекцией. Это задаст строгие рамки для ИИ и не позволит ему фантазировать.</p>
+                    <div class="bg-yellow-50 border-l-4 border-brand-gold p-4 mt-4">
+                        <p class="text-sm text-gray-600"><i class="fa-solid fa-lightbulb text-brand-gold mr-2"></i> Данный портал создан на основе современных методик внедрения нейросетей в образование. Подробные идеи можно также изучить в сообществе для учителей: <a href="https://vk.ru/algoritmika.teacher" target="_blank" class="text-blue-600 underline hover:text-blue-800 font-bold">Алгоритмика | Учителя России (VK)</a>.</p>
+                    </div>
+                </div>
+                <div class="md:w-1/3 flex flex-col justify-center items-center bg-gray-50 p-6 rounded-xl border border-gray-200 shadow-inner">
+                    <i class="fa-solid fa-file-lines text-5xl text-brand-gold mb-4"></i>
+                    <h3 class="font-bold text-center mb-2">Пример лекции для ИИ</h3>
+                    <p class="text-sm text-center text-gray-500 mb-4">Лучший формат для передачи текста нейросети — простой текстовый файл (.txt).</p>
+                    <button onclick="downloadTxt()" class="w-full bg-brand-dark text-white py-2 px-4 rounded hover:bg-gray-800 transition shadow-lg flex justify-center items-center">
+                        <i class="fa-solid fa-download mr-2"></i>Скачать лекцию (.txt)
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Инструменты -->
+        <h2 class="text-3xl font-bold text-brand-dark mb-6 gs-reveal">Рекомендуемые сервисы (Кликните на название)</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 gs-reveal">
+            
+            <!-- Сервис 1: Z.ai -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <img src="images/screenshot1.png" alt="Z.ai interface" onerror="this.src='https://placehold.co/600x300/1a202c/c5a059?text=Скриншот+1+(Z.ai+скрепка)'" class="w-full h-48 object-cover border-b cursor-pointer" onclick="window.open('https://chat.z.ai', '_blank')">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <a href="https://chat.z.ai" target="_blank" class="text-xl font-bold text-blue-700 ai-link"><i class="fa-solid fa-link text-sm mr-1"></i> Z.ai (chat.z.ai)</a>
+                        <span class="bg-green-100 text-green-800 border border-green-300 font-bold text-xs px-2 py-1 rounded-full"><i class="fa-solid fa-check-circle mr-1"></i>БЕЗ VPN</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Прекрасный сервис для создания одноразовых сайтов-ассистентов под конкретную лекцию. Вы загружаете текст через скрепку, и он генерирует веб-страницу с чат-ботом для студентов (как в нашем Практикуме).</p>
+                </div>
+            </div>
+
+            <!-- Сервис 2: Qwen -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <img src="images/screenshot2.png" alt="Qwen interface" onerror="this.src='https://placehold.co/600x300/1a202c/c5a059?text=Скриншот+2+(Qwen+скрепка+и+Web+Search)'" class="w-full h-48 object-cover border-b cursor-pointer" onclick="window.open('https://chat.qwen.ai', '_blank')">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <a href="https://chat.qwen.ai" target="_blank" class="text-xl font-bold text-blue-700 ai-link"><i class="fa-solid fa-link text-sm mr-1"></i> Qwen (chat.qwen.ai)</a>
+                        <span class="bg-green-100 text-green-800 border border-green-300 font-bold text-xs px-2 py-1 rounded-full"><i class="fa-solid fa-check-circle mr-1"></i>БЕЗ VPN</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Имеет критически важную функцию — <strong>отключение веб-поиска</strong>. Если нажать на переключатель «Web Search» (выключить его) и прикрепить ваш файл лекции, нейросеть будет отвечать СТОГО по вашему тексту.</p>
+                </div>
+            </div>
+
+            <!-- Сервис 3: DeepSeek -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+                <img src="images/screenshot3.png" alt="DeepSeek interface" onerror="this.src='https://placehold.co/600x300/1a202c/c5a059?text=Скриншот+3+(DeepSeek+скрепка)'" class="w-full h-48 object-cover border-b cursor-pointer" onclick="window.open('https://chat.deepseek.com', '_blank')">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <a href="https://chat.deepseek.com" target="_blank" class="text-xl font-bold text-blue-700 ai-link"><i class="fa-solid fa-link text-sm mr-1"></i> DeepSeek</a>
+                        <span class="bg-green-100 text-green-800 border border-green-300 font-bold text-xs px-2 py-1 rounded-full"><i class="fa-solid fa-check-circle mr-1"></i>БЕЗ VPN</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4">Лидер в глубоком анализе текста. Нажмите на скрепку возле строки ввода, прикрепите txt-файл лекции. Идеален для проверки студенческих эссе или составления сложных учебных планов.</p>
+                </div>
+            </div>
+
+            <!-- Сервис 4: Google AI Studio & NotebookLM -->
+            <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300 border-2 border-red-100">
+                <img src="images/screenshot4.png" alt="Google AI Studio interface" onerror="this.src='https://placehold.co/600x300/1a202c/c5a059?text=Скриншот+4+(Google+AI+Studio+микрофон)'" class="w-full h-48 object-cover border-b cursor-pointer" onclick="window.open('https://aistudio.google.com', '_blank')">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="flex flex-col">
+                            <a href="https://aistudio.google.com" target="_blank" class="text-xl font-bold text-blue-700 ai-link leading-tight"><i class="fa-solid fa-link text-sm mr-1"></i> Google AI Studio</a>
+                            <a href="https://notebooklm.google.com" target="_blank" class="text-sm font-bold text-gray-500 ai-link"><i class="fa-solid fa-link text-xs mr-1"></i> NotebookLM</a>
+                        </div>
+                        <span class="bg-red-100 text-red-800 border border-red-300 font-bold text-xs px-2 py-1 rounded-full whitespace-nowrap ml-2"><i class="fa-solid fa-lock mr-1"></i>НУЖЕН VPN</span>
+                    </div>
+                    <p class="text-gray-600 text-sm mb-4"><strong>AI Studio</strong> — профессиональный инструмент. <strong>Главная фишка: возможность диктовать текст голосом!</strong> Найдите значок микрофона возле строки ввода и просто наговорите свой запрос. <br><br><strong>NotebookLM</strong> — вершина для преподавателя. Загружаете до 50 книг, и он становится приватным экспертом по вашей дисциплине для студентов.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Библиотека промптов -->
+        <h2 class="text-3xl font-bold text-brand-dark mb-6 gs-reveal">Библиотека запросов (Промптов)</h2>
+        <p class="text-gray-700 mb-6 gs-reveal">Чтобы получить качественный результат, общайтесь с ИИ как со старательным, но неопытным стажером. Давайте ему роль, контекст и четкие ограничения.</p>
+        
+        <div class="space-y-6 gs-reveal">
+            <!-- Промпт 1 -->
+            <div class="bg-white rounded-lg border-l-4 border-blue-500 shadow p-6">
+                <h4 class="font-bold text-lg mb-2"><i class="fa-solid fa-shield-halved text-blue-500 mr-2"></i>Анти-галлюцинаторный каркас (Проверка ответов)</h4>
+                <p class="text-sm text-gray-500 mb-3">Используйте этот запрос ПЕРЕД тем, как загрузить лекцию через скрепку, чтобы заставить ИИ работать только с ней.</p>
+                <div class="prompt-code bg-gray-800 text-green-400 p-4 rounded text-sm font-mono whitespace-pre-wrap">Ты — строгий академический ассистент Сретенской Духовной Академии.
+Я предоставлю тебе текст лекции. Твоя единственная задача — отвечать на вопросы СТРОГО на основании этого текста. 
+Правила:
+1. Если ответа на вопрос нет в тексте, прямо ответь: "В предоставленном материале данный вопрос не рассматривался".
+2. ЗАПРЕЩЕНО использовать знания из интернета и придумывать факты.
+3. Перед каждым ответом цитируй небольшой фрагмент текста, на который опираешься.
+Подтверди, что понял правила, и жди загрузки файла.</div>
+            </div>
+
+            <!-- Промпт 2 -->
+            <div class="bg-white rounded-lg border-l-4 border-brand-gold shadow p-6">
+                <h4 class="font-bold text-lg mb-2"><i class="fa-solid fa-comments text-brand-gold mr-2"></i>Метод Сократа (Для симуляции экзамена)</h4>
+                <p class="text-sm text-gray-500 mb-3">Превращает ИИ в экзаменатора, который тестирует студента.</p>
+                <div class="prompt-code bg-gray-800 text-green-400 p-4 rounded text-sm font-mono whitespace-pre-wrap">Выступи в роли профессора истории Церкви. Я — твой студент.
+На основе прикрепленного файла проведи со мной устный экзамен методом Сократа. 
+Задавай мне по одному вопросу на размышление. Дождись моего ответа, оцени его, укажи на исторические неточности, если они есть, и только потом задавай следующий вопрос. Не пиши все вопросы сразу.</div>
+            </div>
+
+            <!-- Промпт 3 -->
+            <div class="bg-white rounded-lg border-l-4 border-purple-500 shadow p-6">
+                <h4 class="font-bold text-lg mb-2"><i class="fa-solid fa-wand-magic-sparkles text-purple-500 mr-2"></i>Мета-промптинг (Пусть ИИ сам пишет запрос)</h4>
+                <p class="text-sm text-gray-500 mb-3">Если ИИ вас не понимает, попросите его улучшить ваш запрос.</p>
+                <div class="prompt-code bg-gray-800 text-green-400 p-4 rounded text-sm font-mono whitespace-pre-wrap">Действуй как эксперт по работе с нейросетями (промпт-инженер). 
+Я хочу получить от ИИ следующий результат:[ОПИШИТЕ ВАШУ ЦЕЛЬ ПРОСТЫМИ СЛОВАМИ, НАПРИМЕР: составить 10 сложных тестов с подвохом по истории Болгарии].
+Напиши для меня идеальный, структурированный запрос, который я смогу скопировать и отправить нейросети, чтобы она выдала наилучший результат без ошибок.</div>
+            </div>
+        </div>
+    </main>
+
+    <!-- СЕКЦИЯ 2: ИНТЕРАКТИВНЫЙ КУРС -->
+    <main id="section-course" class="hidden course-mode min-h-screen origin-top pb-10">
+        
+        <!-- Шапка курса -->
+        <div class="bg-[#1a1a1a] border-b border-[#333] py-4 shadow-lg sticky top-0 z-40">
+            <div class="max-w-7xl mx-auto px-4">
+                <h2 class="text-2xl text-course-accent text-center font-bold mb-4">Болгарская Православная Церковь</h2>
+                <!-- Timeline навигация -->
+                <div class="flex items-center justify-between max-w-4xl mx-auto" id="course-timeline">
+                    <!-- Генерируется через JS -->
+                </div>
+            </div>
+        </div>
+
+        <div class="max-w-7xl mx-auto px-4 mt-8 flex flex-col lg:flex-row gap-6">
+            
+            <!-- Левая колонка: Текст лекции и интерактивы -->
+            <div class="lg:w-2/3 bg-course-panel rounded-lg border border-[#333] shadow-2xl overflow-hidden flex flex-col h-[75vh]">
+                <div class="bg-[#252525] px-6 py-3 border-b border-[#333] flex justify-between items-center">
+                    <span class="text-sm text-gray-400 uppercase tracking-widest" id="lesson-number">Лекция 1 ИЗ 10</span>
+                    <button class="text-sm text-gray-400 hover:text-white transition"><i class="fa-solid fa-headphones mr-2"></i>Прослушать</button>
+                </div>
+                
+                <div class="p-8 overflow-y-auto flex-grow" id="lesson-content-area">
+                    <h1 class="text-3xl font-bold mb-6 text-white" id="lesson-title">Заголовок</h1>
+                    <div id="lesson-text" class="text-lg leading-relaxed text-gray-300 space-y-4">
+                        Текст лекции...
+                    </div>
+                    
+                    <!-- Контейнер для интерактива (карта) -->
+                    <div id="interactive-container" class="mt-10 hidden">
+                        <div class="bg-[#2a2a2a] border border-[#444] rounded-xl p-6 shadow-inner">
+                            <h3 class="text-course-accent text-xl mb-4 font-bold"><i class="fa-solid fa-map-location-dot mr-2"></i>Исторический анализ</h3>
+                            
+                            <div class="flex flex-col sm:flex-row gap-6 mb-6 justify-center items-center">
+                                <div class="text-center">
+                                    <img src="images/map.jpg" onerror="this.src='https://placehold.co/300x200/222/c5a059?text=Карта+Первого+Царства+(IX+в)'" class="w-64 h-40 object-cover rounded border-2 border-[#555] shadow-lg mb-2">
+                                    <span class="text-xs text-gray-400 mt-2 block">Карта Первого Болгарского царства</span>
+                                </div>
+                                <div class="text-center">
+                                    <img src="images/boris.jpg" onerror="this.src='https://placehold.co/200x200/222/c5a059?text=Князь+Борис+I'" class="w-40 h-40 object-cover rounded border-2 border-[#555] shadow-lg mb-2">
+                                    <span class="text-xs text-gray-400 mt-2 block">Святой князь Борис I</span>
+                                </div>
+                            </div>
+                            
+                            <p class="mb-4">Имеет ли личность князя Бориса отношение к временному промежутку границ государства, изображенных на карте?</p>
+                            
+                            <div class="flex gap-4">
+                                <button onclick="checkInteractiveAnswer(true)" class="flex-1 bg-transparent border border-course-accent text-course-accent py-2 rounded hover:bg-course-accent hover:text-black transition">Да, это IX век</button>
+                                <button onclick="checkInteractiveAnswer(false)" class="flex-1 bg-transparent border border-gray-500 text-gray-400 py-2 rounded hover:bg-gray-700 transition">Нет, эпохи разные</button>
+                            </div>
+                            <div id="interactive-feedback" class="mt-4 text-sm hidden font-bold"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Правая колонка: Чат-ассистент -->
+            <div class="lg:w-1/3 bg-course-panel rounded-lg border border-[#333] shadow-2xl flex flex-col h-[75vh]">
+                <div class="bg-[#252525] px-6 py-3 border-b border-[#333] flex items-center gap-3">
+                    <div class="w-8 h-8 rounded bg-course-accent flex items-center justify-center text-black">
+                        <i class="fa-solid fa-robot"></i>
+                    </div>
+                    <div>
+                        <div class="font-bold text-white">Учебный ассистент</div>
+                        <div class="text-xs text-gray-400">Анализирует ваши вопросы по тексту</div>
+                    </div>
+                </div>
+
+                <div class="flex-grow p-4 overflow-y-auto space-y-4" id="chat-messages">
+                    <div class="bg-[#2a2a2a] p-4 rounded-lg rounded-tl-none border border-[#444] text-sm w-[90%]">
+                        Изучите текст лекции слева. Затем задайте вопрос по материалу. Я оценю релевантность вашего вопроса, объясню, если он не по теме, и помогу сформулировать точнее.
+                    </div>
+                </div>
+
+                <div class="p-4 border-t border-[#333] bg-[#1a1a1a]">
+                    <div class="text-xs text-gray-500 mb-2">Подсказки:</div>
+                    <div id="chat-hints" class="flex flex-wrap gap-2 mb-4">
+                        <!-- Подсказки генерируются JS -->
+                    </div>
+                    <div class="flex relative">
+                        <input type="text" id="chat-input" class="w-full bg-[#2a2a2a] border border-[#444] rounded-full py-3 pl-4 pr-12 text-sm text-white focus:outline-none focus:border-course-accent transition" placeholder="Задайте вопрос по лекции..." onkeypress="if(event.key === 'Enter') sendChatMessage()">
+                        <button onclick="sendChatMessage()" class="absolute right-2 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-course-accent rounded-full text-black flex items-center justify-center hover:bg-yellow-500 transition">
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Скрипты для логики и данных -->
+    <script>
+        // Анимация вкладок
+        function switchTab(tabId) {
+            const guide = document.getElementById('section-guide');
+            const course = document.getElementById('section-course');
+            const btnGuide = document.getElementById('tab-guide');
+            const btnCourse = document.getElementById('tab-course');
+
+            if(tabId === 'guide') {
+                gsap.to(course, {opacity: 0, scale: 0.98, duration: 0.3, onComplete: () => {
+                    course.classList.add('hidden');
+                    guide.classList.remove('hidden');
+                    gsap.fromTo(guide, {opacity: 0, scale: 0.98}, {opacity: 1, scale: 1, duration: 0.3});
+                }});
+                btnGuide.className = "px-4 py-2 rounded-md font-medium text-brand-dark bg-brand-gold shadow-md transition-all duration-300";
+                btnCourse.className = "px-4 py-2 rounded-md font-medium text-white border border-brand-gold hover:bg-brand-gold hover:text-brand-dark transition-all duration-300";
+            } else {
+                if(document.getElementById('course-timeline').innerHTML === '') initCourse();
+                
+                gsap.to(guide, {opacity: 0, scale: 0.98, duration: 0.3, onComplete: () => {
+                    guide.classList.add('hidden');
+                    course.classList.remove('hidden');
+                    gsap.fromTo(course, {opacity: 0, scale: 0.98}, {opacity: 1, scale: 1, duration: 0.3});
+                }});
+                btnCourse.className = "px-4 py-2 rounded-md font-medium text-brand-dark bg-brand-gold shadow-md transition-all duration-300";
+                btnGuide.className = "px-4 py-2 rounded-md font-medium text-white border border-brand-gold hover:bg-brand-gold hover:text-brand-dark transition-all duration-300";
+            }
+        }
+
+        // Данные 10 лекций 
+        const lessons =[
+            {
+                id: 1, title: "Христианство в Болгарии до завоевания ее Византией",
+                text: `<p>Коренным населением Балканского полуострова были фракийские племена. С 341 по 146 гг. до Р. Х. фракийские земли находились под властью Македонии. В середине II в. до Р. Х. Македония была подчинена Римской империи. Здесь появились новые города, которые в христианскую эпоху станут центрами новых епархий: Никополь, Маркианополь, Сердика (ныне София), Анхиал и др.</p>
+                       <p>Христианство на территории Болгарии распространялось благодаря ученикам ап. Павла. Один из них, апостол Амплий, основал первую епископскую кафедру в г. Одесс (совр. Варна).</p>
+                       <p>Во II в. епископские кафедры возникли в городах Анхиал, Дебелт, Сердика, Фессалоника.</p>
+                       <p>К концу IV в. Балканский полуостров был достаточно христианизирован. Города, в которых находились центры епархий, стали играть большую роль. В 343 г. в Сердике проходил Церковный Собор.</p>
+                       <p>В конце IV – V вв. христианство на Балканах проповедовал римский миссионер св. Никита Ремесьянский.</p>`,
+                hints:["Кто основал первую кафедру в Одессе?", "Когда проходил Собор в Сердике?", "Кто такой св. Никита Ремесьянский?"],
+                keywords:["фракийские", "македонии", "римской", "павла", "амплий", "варна", "сердика", "собор", "никита", "ремесьянский"]
+            },
+            {
+                id: 2, title: "Образование Болгарской Церкви",
+                text: `<p>Образование Болгарской Церкви тесным образом было связано с формированием Болгарского государства. При болгарском князе Борисе (852 – 889) в 865 г. произошло массовое крещение болгар. Сам князь Борис принял во св. крещении имя Михаил в честь византийского императора Михаила III.</p>
+                       <p>Сразу после принятия христианства князь Борис предпринял активные шаги к провозглашению автокефалии Церкви. Сначала с этой просьбой болгары обратились к Константинопольскому Патриарху Фотию, но получили отказ. Причина отказа заключалась в том, что, по мнению Патриарха, Болгарская Церковь еще достаточно молода и должна находиться в подчинении Константинополю. Борис, вынашивая вместе с мыслью об автокефалии идею независимого государства, обращается к Римскому папе Николаю I. Переговоры с Римом тянулись с 866 по 869 г. и закончились безрезультатно. Тогда Борис вторично обращается в Константинополь.</p>
+                       <p>Итогом переговоров было то, что 4 марта 870 г. Константинопольский Патриарх Игнатий объявил Болгарскую Церковь автономной. Первым архиепископом автономной Болгарской Церкви стал Иосиф. Таким образом, было положено начало административному устройству Болгарской Православной Церкви.</p>
+                       <p>В 889 г. Борис отрекся от престола и удалился в монастырь. Престол унаследовал старший сын Бориса – Владимир (889 – 893), ярый антихристианин. Он хотел ликвидировать христианство в Болгарии, но по приказу отца Владимир был схвачен, ослеплен и посажен в тюрьму.</p>`,
+                hints:["В каком году произошло крещение болгар?", "К какому Папе обращался Борис?", "Кто стал первым архиепископом?"],
+                keywords:["борис", "крещение", "михаил", "фотий", "николай", "игнатий", "иосиф", "владимир", "ослеплен", "870"],
+                hasInteractive: true
+            },
+            {
+                id: 3, title: "Деятельность учеников Кирилла и Мефодия. Расцвет",
+                text: `<p>В конце IX в. большую миссионерско-просветительскую роль сыграла деятельность учеников святых равноапостольных Кирилла и Мефодия – святых Климента, Наума, Горазда и Ангелария, которые прибыли в Болгарию, будучи изгнанными из Моравии.</p>
+                       <p>При болгарском князе Симеоне (893 – 927) Болгарская Церковь переживала свой расцвет. Сам Симеон принимал деятельное участие в литературном движении. Он поставил своей главной задачей создать корпус христианской книжности на славянском языке. По его указу был составлен сборник «Златоструй», состоящий из переводов творений св. Иоанна Златоуста. При нем же была переработана для болгар византийская эклога – «Закон Судный Людям».</p>
+                       <p>Помимо этого, Симеон смог реализовать свои амбиции по поводу превращения Болгарии в самое сильное государство на Балканах, оттеснив Византию на второй план. Симеон провел несколько удачных войн с Византией и отвоевал у нее Фракию, Фессалию, а затем подчинил Сербию. Это позволило Симеону объявить Болгарию империей, а себя – «императором (басилевсом) болгар и ромеев». Ощутив себя политически независимым м могущественным, в 919 г. Симеон созвал в Преславе Церковно-Народный Собор, где состоялось провозглашение автокефалии Болгарской Православной Церкви и возведение ее в ранг Патриархата.</p>
+                       <p>Вначале Константинополь не признал этих новшеств, и лишь 28 октября 927 г. болгарский царь Петр (927 – 969) заключил мирный договор с Византией, по которому Петр был признан царем, а глава Болгарской Церкви – архиепископ Доростольский Дамиан – Патриархом. Таким образом. 28 октября 927 г. считается датой начала патриаршества в Болгарской Церкви. Кафедра находилась в Доростоле (совр. Силистра). После покорения восточной Болгарии византийским императором Иоанном Цимисхием (969 – 976) она была перенесена в Триадицу (совр. София), потом в Преспу, а затем в Охрид – столицу Западного Болгарского Царства, во главе которого стоял царь Самуил (976 – 1014).</p>`,
+                hints:["Назовите учеников Кирилла и Мефодия", "Что такое сборник Златоструй?", "Где находилась кафедра Патриарха Дамиана?"],
+                keywords:["климент", "наум", "горазд", "симеон", "златоструй", "преслав", "патриархат", "петр", "дамиан", "самуил", "охрид"]
+            },
+            {
+                id: 4, title: "Охридская архиепископия",
+                text: `<p>Охридская архиепископия. В 1018 – 1019 гг. византийский император Василий II Болгаробойца завоевал Болгарию. Он признал независимость Болгарской Церкви, хотя лишил ее патриаршего ранга и низвел ее статус до архиепископии (кафедра продолжала находиться в Охриде). Охридская архиепископия существовала с 1019 по 1767 гг.</p>
+                       <p>С этого времени архиепископы Охридские, а вскоре и епископы, назначаемые теперь указом императора, были греки, которые были проводниками византийского правительства и Константинопольского Патриарха и мало заботились о своей болгарской пастве. Политика эллинизации в Болгарской Церкви особенно усилилась с 1037 г., когда Охридским архиепископом был назначен грек Лев Пафлагонянин.</p>`,
+                hints:["Почему Василия II прозвали Болгаробойцей?", "До какого года существовала Охридская архиепископия?", "Что такое политика эллинизации?"],
+                keywords:["василий", "болгаробойца", "архиепископия", "греки", "эллинизаци", "лев", "пафлагонянин", "1019", "1767"]
+            },
+            {
+                id: 5, title: "Ереси в Болгарии (X-XIV вв.)",
+                text: `<p>В течение X – XIV вв. на территорию Болгарию проникают различные ереси, с которыми болгарскому духовенству приходилось вести борьбу. Из наиболее распространенных лжеучений распространились: богомильство, адамитство, ереси жидовствующих и варлаамитов.</p>
+                       <p>Богомильская ересь – одна из наиболее сильных – появилась в Болгарии в Х в, названная по имени попа Богомила, организатора и вождя этого движения. Ересь стояла в тесной связи с ересью павликиан и евхитов. В основе богомильского учения лежал дуализм – существование двух богов – доброго (создавшего духовный ангельский мир) и злого (Сатанаила, низверженного сына доброго бога). Это движение вначале имело антифеодальный характер и постепенно приобрело религиозную окраску. Выступали против христианской обрядности, не признавали икон, отрицали литургию и причастие, отвергали церкви, как места молитвы. Богомилы не признавали также Ветхого Завета, за исключением псалмов и книг пророков, и противопоставляли ему Евангелие. Центром этого движения был г. Пловдив.</p>
+                       <p>В XIV в. в Болгарии появилась ересь адамитов, учивших о равенстве всех людей, но иллюстрировали эту идею очень своеобразно: один из их проповедников – Лазарь – ходил по улицам Тырнова в «костюме» Адама.</p>
+                       <p>В это же время появились ересь жидовствующих (осмеивали почитание Христа Спасителя, православную веру и проч.) и ересь варлаамитов (учили, что Божественный свет на Фаворе сотворен, отрицали иконопочитание).</p>
+                       <p>Ересь богомилов была осуждена на Церковном Соборе 1210 г., а три последние – на Соборах 1350 и 1360 гг.</p>`,
+                hints:["В чем суть дуализма богомилов?", "Как себя вели адамиты?", "Когда были осуждены эти ереси?"],
+                keywords:["богомил", "дуализм", "сатанаил", "адамит", "лазарь", "тырнов", "жидовствующ", "варлаамит", "собор", "1210", "1350"]
+            },
+            {
+                id: 6, title: "Тырновский Патриархат",
+                text: `<p>На протяжении почти восьми веков Охридская архиепископия несла свою духовную миссию в Болгарии. В 1767 г. она была подчинена Константинополю на правах Пресланской митрополии.</p>
+                       <p>Тырновский Патриархат. С момента византийского завоевания в начале XI в. южная часть Болгарии находилась под греческим игом. В 1185 – 1186 гг. болгарским феодалам – братьям Петру и Асеню – удалось организовать восстание против Византии. Возникло Второе Болгарское Царство со столицей в Тырнове.</p>
+                       <p>В 1186 г. в Тырнове был провозглашен первый архиепископ Василий (1186 – 1204), короновавший Асеня царем Болгарии. Лишь в 1235 г., после заключения военного союза с никейским императором, в Лампсаке был созван Церковный Собор, на котором Константинопольский Патриарх Герман II признал Тырновского архиепископа Патриархом. Первым Тырновским Патриархом стал Иоаким (1235 – 1246).</p>
+                       <p>Тырновский Патриархат просуществовал 158 лет (1235 – 1393). После того, как в 1393 г. Второе Болгарское Царство пало в результате турецкого завоевания, Тырновская кафедра была подчинена Константинопольской Церкви.</p>`,
+                hints:["Кто возглавил восстание в 1185 году?", "Где находилась столица Второго Царства?", "Сколько лет просуществовал Тырновский Патриархат?"],
+                keywords:["тырнов", "петр", "асень", "василий", "лампсак", "герман", "иоаким", "турецко", "1393"]
+            },
+            {
+                id: 7, title: "Эпоха турецкого господства и Возрождение",
+                text: `<p>Турецкое господство повлекло за собой тяжкие испытания. Кроме того, со стороны Константинополя последовали настойчивые попытки эллинизировать Болгарскую Церковь. Греческое духовенство внушало болгарам, что совершать службу на славянском языке – грех и даже ересь. В храмах стирались славянские надписи и заменялись греческими.</p>
+                       <p>В условиях духовного и политического рабства явился вдохновенный сын своего народа – преподобный иеромонах Паисий Хиландарский (1722 – 1798), основоположник болгарского возрождения. В 1762 г. он написал книгу – «История славяно-болгарская о народах, о царях и о святых болгарских». В ней преподобный Паисий призывал болгар бороться за свою национальную культуру.</p>
+                       <p>Продолжателем идей преподобного Паисия был его ученик епископ Врачанский Софроний (Стойко Владиславов). Он издал «Собрание поучений» на новоболгарском языке, а также написал «Житие и страдания грешного Софрония».</p>`,
+                hints:["Как греки относились к славянскому языку?", "Кто написал 'Историю славяно-болгарскую'?", "Кем был Софроний Врачанский?"],
+                keywords:["турецк", "эллинизи", "греческ", "славянск", "паисий", "хиландар", "возрождени", "софроний", "врачанск"]
+            },
+            {
+                id: 8, title: "Борьба за церковную независимость",
+                text: `<p>С начала 1820-х гг. стали открываться национальные болгарские школы, начали печататься книги. 1820-е гг. отмечаются острыми конфликтами болгарского населения с греческим духовенством (Тырново, Самоков, Враца). Местные жители отказывались платить налоги епископам-грекам.</p>
+                       <p>В 1840-х гг. борьба вспыхнула с новой силой. Паства Тырновской епархии обратилась с просьбой об удалении митрополита-грека Панарета. В конце 1840-х гг. центр борьбы переместился в Константинополь. Архимандрит Неофит Бозвели и Иларион Стоянович основали там болгарскую православную общину. В 1858 г. для этой церкви настоятелем был поставлен Иларион с титулом «епископ Макариопольский».</p>
+                       <p>В 1858 г. состоялся Собор, где требования болгар (избирать болгарских архиереев) были отклонены. 3 апреля 1860 г., в день Пасхи, епископ Иларион вместо Константинопольского Патриарха помянул «все епископство православных». Этим действием Болгарская Церковь де-факто отделялась от Константинополя.</p>`,
+                hints:["Из-за чего начались конфликты в 1820-х?", "Кто такие Неофит Бозвели и Иларион Стоянович?", "Что произошло 3 апреля 1860 года?"],
+                keywords:["школ", "налоги", "панарет", "неофит", "бозвели", "иларио", "константинопол", "апрел", "1860", "помянул"]
+            },
+            {
+                id: 9, title: "Болгарский Экзархат и Схизма",
+                text: `<p>28 февраля 1870 г. был издан султанский фирман, по которому создавался независимый Болгарский Экзархат. Константинопольский Патриарх Григорий VI не хотел принимать фирман. В 1872 г. болгарам удалось избрать своего первого Экзарха – им стал митрополит Видинский Анфим.</p>
+                       <p>11 мая 1872 г. Анфим провозгласил Болгарскую Православную Церковь автокефальной. Константинополь ответил протестом, объявил о низложении Анфима. Константинопольский Патриарх на Поместном Соборе 16 сентября 1872 г. осудил «филетизм», то есть племенное (народное) деление в Православии, а Болгарскую Церковь объявил схизматической. Русская и другие Церкви не приняли этих прещений.</p>
+                       <p>Русско-турецкая война 1877 – 1878 гг. завершилась освобождением Болгарии. При Экзархе Иосифе (1877 – 1915) открывались духовные семинарии и налаживалась жизнь Церкви.</p>`,
+                hints:["Кто издал фирман о независимости?", "Кто стал первым Экзархом?", "Что такое филетизм?"],
+                keywords:["фирман", "султан", "экзарх", "анфим", "1872", "филетизм", "схизм", "иосиф", "войн"]
+            },
+            {
+                id: 10, title: "XX век и современное положение",
+                text: `<p>На протяжении 1872 – 1945 гг. продолжала действовать наложенная Константинополем схизма. 22 февраля 1945 г. по ходатайству Русской Православной Церкви болгарская схизма была прекращена Вселенским Патриархом Вениамином.</p>
+                       <p>10 мая 1953 г. состоялся Собор, на котором было восстановлено патриаршество в Болгарии, интронизирован Патриарх Кирилл (1953–1971). С 1971 г. до настоящего времени Болгарскую Церковь возглавляет Патриарх Максим.</p>
+                       <p>Монастыри сыграли важную роль в сохранении культуры. Наиболее известные: Рыльская обитель (основана прп. Иоанном Рыльским), Бачковский монастырь (основан грузином Бакурианис-дзе, ставропигиальный) и Троянский монастырь.</p>
+                       <p>В 2002 году был принят Закон о вероисповедании, который окончательно ликвидировал вмешательство государства в устройство Церкви и закрепил за ней историческую недвижимость.</p>`,
+                hints:["В каком году была снята схизма?", "Кто был интронизирован в 1953 году?", "Назовите три главных монастыря Болгарии."],
+                keywords:["1945", "вениамин", "снят", "схизм", "кирилл", "максим", "рыльск", "бачковск", "троянск", "2002"]
+            }
+        ];
+
+        let currentLessonId = 1;
+
+        // Инициализация интерактивного курса
+        function initCourse() {
+            const timeline = document.getElementById('course-timeline');
+            timeline.innerHTML = '';
+            
+            lessons.forEach((lesson, index) => {
+                const step = document.createElement('div');
+                step.className = `timeline-step ${index === 0 ? 'active' : ''}`;
+                step.innerText = lesson.id;
+                step.onclick = () => loadLesson(lesson.id);
+                step.id = `step-${lesson.id}`;
+                
+                timeline.appendChild(step);
+                
+                if(index < lessons.length - 1) {
+                    const connector = document.createElement('div');
+                    connector.className = 'timeline-connector';
+                    timeline.appendChild(connector);
+                }
+            });
+            
+            loadLesson(1);
+        }
+
+        // Загрузка лекции
+        function loadLesson(id) {
+            currentLessonId = id;
+            const lesson = lessons.find(l => l.id === id);
+            
+            document.querySelectorAll('.timeline-step').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step-${id}`).classList.add('active');
+            
+            document.getElementById('lesson-number').innerText = `ЛЕКЦИЯ ${id} ИЗ 10`;
+            document.getElementById('lesson-title').innerText = lesson.title;
+            document.getElementById('lesson-text').innerHTML = lesson.text;
+            
+            const interactiveBlock = document.getElementById('interactive-container');
+            if(lesson.hasInteractive) {
+                interactiveBlock.classList.remove('hidden');
+                document.getElementById('interactive-feedback').classList.add('hidden');
+            } else {
+                interactiveBlock.classList.add('hidden');
+            }
+            
+            const hintsContainer = document.getElementById('chat-hints');
+            hintsContainer.innerHTML = '';
+            lesson.hints.forEach(hint => {
+                const btn = document.createElement('button');
+                btn.className = "bg-[#333] hover:bg-[#444] text-gray-300 px-3 py-1 rounded text-xs transition border border-[#555]";
+                btn.innerText = hint;
+                btn.onclick = () => {
+                    document.getElementById('chat-input').value = hint;
+                    sendChatMessage();
+                };
+                hintsContainer.appendChild(btn);
+            });
+
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = `
+                <div class="bg-[#2a2a2a] p-4 rounded-lg rounded-tl-none border border-[#444] text-sm w-[90%] text-white shadow">
+                    Тема переключена на: <strong>${lesson.title}</strong>. <br>Внимательно прочитайте текст слева и задайте мне вопрос.
+                </div>
+            `;
+        }
+
+        // Логика чата
+        function sendChatMessage() {
+            const input = document.getElementById('chat-input');
+            const message = input.value.trim();
+            if(!message) return;
+
+            const chatMessages = document.getElementById('chat-messages');
+            
+            const userDiv = document.createElement('div');
+            userDiv.className = "bg-course-accent text-black p-3 rounded-lg rounded-tr-none text-sm w-[85%] self-end ml-auto shadow font-medium";
+            userDiv.innerText = message;
+            chatMessages.appendChild(userDiv);
+            
+            input.value = '';
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            const typingDiv = document.createElement('div');
+            typingDiv.className = "text-gray-500 text-xs italic mt-2";
+            typingDiv.id = "typing-indicator";
+            typingDiv.innerText = "ИИ анализирует текст...";
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            setTimeout(() => {
+                typingDiv.remove();
+                const lesson = lessons.find(l => l.id === currentLessonId);
+                const lowercaseMsg = message.toLowerCase();
+                const isRelevant = lesson.keywords.some(kw => lowercaseMsg.includes(kw));
+                
+                const botDiv = document.createElement('div');
+                botDiv.className = "bg-[#2a2a2a] p-4 rounded-lg rounded-tl-none border border-[#444] text-sm w-[90%] text-white shadow mt-2 leading-relaxed";
+                
+                if(isRelevant) {
+                    botDiv.innerHTML = `<span class="text-green-400 font-bold"><i class="fa-solid fa-check mr-2"></i>Точный вопрос!</span><br><br>Вы задали вопрос, который напрямую относится к текущему абзацу. Опираясь на текст, я могу сформировать полный ответ на него. Отличная работа с контекстом!`;
+                } else {
+                    botDiv.innerHTML = `<span class="text-red-400 font-bold"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Неточный вопрос</span><br><br>В данном фрагменте лекции эта информация <strong>не упоминается</strong>. Я, как строгий ИИ-ассистент, не имею права выдумывать ответ или искать его в интернете. Пожалуйста, опирайтесь только на текст слева. Воспользуйтесь подсказками внизу.`;
+                }
+                
+                chatMessages.appendChild(botDiv);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }, 1000);
+        }
+
+        // Интерактивное задание
+        function checkInteractiveAnswer(isCorrect) {
+            const feedback = document.getElementById('interactive-feedback');
+            feedback.classList.remove('hidden');
+            if(isCorrect) {
+                feedback.className = "mt-4 text-sm font-bold p-3 bg-green-900 text-green-200 rounded border border-green-700";
+                feedback.innerHTML = "<i class='fa-solid fa-circle-check mr-2'></i>Абсолютно верно! Князь Борис I правил в 852–889 годах, что относится к IX веку. Карта соответствует его эпохе.";
+            } else {
+                feedback.className = "mt-4 text-sm font-bold p-3 bg-red-900 text-red-200 rounded border border-red-700";
+                feedback.innerHTML = "<i class='fa-solid fa-circle-xmark mr-2'></i>Ошибка. Внимательно посмотрите на годы правления Бориса в тексте: 852–889 гг. Это IX век, так же как и карта.";
+            }
+        }
+
+        // Генерация TXT файла
+        function downloadTxt() {
+            let fullText = "ИСТОРИЯ БОЛГАРСКОЙ ПРАВОСЛАВНОЙ ЦЕРКВИ\n\n";
+            lessons.forEach(l => {
+                fullText += `--- ${l.title} ---\n`;
+                let plainText = l.text.replace(/<p>/g, '').replace(/<\/p>/g, '\n\n');
+                fullText += plainText + "\n";
+            });
+            
+            const blob = new Blob([fullText], { type: "text/plain;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "Bolgarskaya_Cerkov.txt";
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        window.onload = () => {
+            gsap.from(".gs-reveal", { y: 30, opacity: 0, duration: 0.8, stagger: 0.2, ease: "power2.out" });
+        };
+    </script>
+</body>
+</html>
